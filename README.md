@@ -64,7 +64,7 @@ Again we will need to figure out what goes in the brackets
 
 ### updateUserById
 
-The route is going to look like this: http://localhost:4001/users/234
+The route is going to look like this: http://localhost:4001/users/235
 
 Which is similar to the GET route but this time it is a PUT. We will need to use Postman again to make this work. 
 
