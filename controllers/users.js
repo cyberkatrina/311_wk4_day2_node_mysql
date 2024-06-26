@@ -23,41 +23,43 @@ const getUserById = (req, res) => {
   })
 }
 
+
 const createUser = (req, res) => {
-  // INSERT INTO USERS FIRST AND LAST NAME
-  let sql = "INSERT INTO users (??, ??) VALUES (?, ?)"
+  let sql1 = "INSERT INTO users (??, ??) VALUES (?, ?);";
+  let sql2 = "INSERT INTO usersContact (??, ??, ??, ??) VALUES (?, ?, ?, ?);";
+  let sql3 = "INSERT INTO usersAddress (??, ??, ??, ??, ??, ??) VALUES (?, ?, ?, ?, ?, ?);";
   
-  // WHAT GOES IN THE BRACKETS
-  sql = mysql.format(sql, ["first_name", "last_name", req.body.first_name, req.body.last_name])
+  sql1 = mysql.format(sql1, ["first_name", "last_name", req.body.first_name, req.body.last_name]);
 
-  pool.query(sql, (err, results) => {
-    if (err) return handleSQLError(res, err)
-    return res.json({ newId: results.insertId });
-  })
+  pool.query(sql1, (err, results) => {
+    if (err) {
+      console.error("Error executing SQL Query 1:", err);
+      return handleSQLError(res, err);
+    }
+    const userId = results.insertId;
 
-  let lastId = pool.query('SELECT LAST_INSERT_ID() AS lastId', function(err, rows) {
-    if (err) throw err;
-    console.log(res)
-
-    // Use lastInsertId to insert into usersContact or usersAddress tables
-    // Example: connection.query('INSERT INTO usersContact (user_id, phone1, phone2, email, ...) VALUES (?, ?, ?, ?, ...)', [lastInsertId, '123-456-7890', '987-654-3210', 'user1@example.com', ...], function(err, result) { ... });
-  })
-
-  let sql2 = "INSERT INTO usersContact (??, ??, ??, ??) VALUES (?, ?, ?, ?)"
-  sql2 = mysql.format(sql, ["user_id", "phone1", "phone2", "email", lastId, req.body.phone1, req.body.phone2, req.body.email])
-  pool.query(sql2, (err, results) => {
-    if (err) return handleSQLError(res, err)
-    return res.json({ newId: results.insertId });
-  })
-
-  let sql3 = "INSERT INTO usersAddress (??, ??, ??, ??, ??, ??) VALUES (?, ?, ?, ?, ?, ?)"
-  sql3 = mysql.format(sql, ["user_id", "address", "city", "county", "state", "zip", lastId, req.body.address, req.body.city, req.body.county, req.body.state, req.body.zip])
-  pool.query(sql3, (err, results) => {
-    if (err) return handleSQLError(res, err)
-    return res.json({ newId: results.insertId });
-  })
+    // Prepare and execute sql2 using userId
+    sql2 = mysql.format(sql2, ["user_id", "phone1", "phone2", "email", userId, req.body.phone1, req.body.phone2, req.body.email]);
+    pool.query(sql2, (err, results) => {
+      if (err) {
+        console.error("Error executing SQL Query 2:", err);
+        return handleSQLError(res, err);
+      }
+      
+      // Prepare and execute sql3 using userId
+      sql3 = mysql.format(sql3, ["user_id", "address", "city", "county", "state", "zip", userId, req.body.address, req.body.city, req.body.county, req.body.state, req.body.zip]);
+      pool.query(sql3, (err, results) => {
+        if (err) {
+          console.error("Error executing SQL Query 3:", err);
+          return handleSQLError(res, err);
+        }
+        return res.json({ newId: userId });
+      });
+    });
+  });
 }
-
+  
+  
 const updateUserById = (req, res) => {
   // UPDATE USERS AND SET FIRST AND LAST NAME WHERE ID = <REQ PARAMS ID>
   let sql = "UPDATE users SET ?? = ?, ?? = ? WHERE ?? = ?"
