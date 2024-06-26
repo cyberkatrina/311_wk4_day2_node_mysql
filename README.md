@@ -23,7 +23,7 @@ Finally, in MySQL Workbench, run the `initialize.sql` script that is included in
 
 The routes/controllers and basic setup has been done for us. Our job is now to complete the queries in `controllers/users.js`. There are five different controller functions and the first one has been done for us. We should be able to see this by navigating to: http://localhost:4001/users/ 
 
-Keep in mind that your port (4001) may be different.
+Keep in mind that your port (3306) may be different.
 
 Take another look in the `sql/connections.js` file and notice how we set up the class to pass the same connection pool to any file that requests it. 
 
@@ -37,7 +37,7 @@ This function is done for us. Notice the SQL statement retrieving all the rows f
 
 ### getUserById
 
-The route is going to look like this: http://localhost:4001/users/389
+The route is going to look like this: http://localhost:3306/users/389
 
 Where 389 is the `:id` parameter in the route. Our job is to select just the row that matches that id and return it. Write a SELECT statement WHERE id = the req param id
 
@@ -45,7 +45,7 @@ Look at the following line where it says `mysql.format()`. What do you think goe
 
 ### createUser
 
-The route is going to look like this: http://localhost:4001/users/
+The route is going to look like this: http://localhost:3306/users/
 
 We are going to need to use Postman to access this route since it is now a POST request. 
 
@@ -64,7 +64,7 @@ Again we will need to figure out what goes in the brackets
 
 ### updateUserById
 
-The route is going to look like this: http://localhost:4001/users/234
+The route is going to look like this: http://localhost:3306/users/235
 
 Which is similar to the GET route but this time it is a PUT. We will need to use Postman again to make this work. 
 
@@ -81,7 +81,7 @@ Write a SQL statement to UPDATE users SET fields = values WHERE id = req param i
 
 ### deleteUserByFirstName
 
-This route will look like this: http://localhost:4001/users/bogus
+This route will look like this: http://localhost:3306/users/bogus
 
 But it will be using the DELETE protocol so again we will need to use Postman to achieve this.
 
